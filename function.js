@@ -10,6 +10,7 @@ if (window.DeviceOrientationEvent) {
 let gyroscope = new Gyroscope({ frequency: 30 });
 
 gyroscope.addEventListener("reading", (e) => {
-    document.getElementById("accelerationSpan").innerText = `Angular velocity along the X-axis ${gyroscope.x}, the Y-axis ${gyroscope.y} ,the Z-axis ${gyroscope.z}`;
+    document.getElementById("accelerationSpan").innerText = `Angular velocity: ${gyroscope.x}, ${gyroscope.y}, ${gyroscope.z}`;
 });
+
 gyroscope.start();
