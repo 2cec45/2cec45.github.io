@@ -1,7 +1,4 @@
 if (window.DeviceOrientationEvent) {
-    // Gyroskop-Event-Listener hinzufügen
-    window.addEventListener('deviceorientation', handleOrientation, true);
-    window.addEventListener('devicemotion', handleAcceleration, true);
 
 } else {
     console.log('Gyroskop wird nicht unterstützt');
