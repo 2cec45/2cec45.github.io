@@ -6,8 +6,8 @@ gyroscope.addEventListener("reading", (e) => {
 });
 accelerometer.addEventListener("reading", (e) => {
     document.getElementById("accelerometerSpan").innerText = "Acceleration: ${accelerometer.x, ${$accelerometer.y}, ${$accelerometer.z}}";
-})
+});
 function setStartPoint(){
-
+    gyroscope.start();
     accelerometer.start();
 }
