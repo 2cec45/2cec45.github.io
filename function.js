@@ -12,4 +12,5 @@ accelerometer.addEventListener("reading", (e) => {
 function setStartPoint() {
     gyroscope.start();
     accelerometer.start();
+    document.getElementById("accellerometerSpan").innerText = "test123";
 }
