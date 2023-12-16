@@ -1,0 +1,27 @@
+body{
+    display: grid;
+    grid-template-rows: 200px 200px;
+}
+
+.gyroscopeSpan{
+    grid-column: 1;
+}
+
+.accelerometerSpan{
+    grid-column: 2;
+}
+
+.button{
+    border-radius: 10px;
+}
+
+.button_settings{
+    color: aqua;
+}
+
+.button_set_source{
+    color:darkblue;
+}
+.drawing_canvas{
+    background-color: lightgrey;
+}
