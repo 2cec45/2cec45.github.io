@@ -1,12 +1,16 @@
+<!DOCTYPE html>
 <title>Webapp Mobile Computin IOT</title>
+
 <head> 
     <script language="javascript", type="text/javascript", src="function.js"></script>
+    <link rel="stylesheet" href="index.css">
 </head>
 
 
 
 <body>
-    <span id="gyroscopeSpan"></span>
-    <span id="accelerometerSpan"></span>
-    <button id="button_set_source" onclick="setStartPoint()">Start Measurement</button>
+    <section id="controls"></section>
+    <button id="button_settings"></button>
+    <button id="button_set_source" onclick="setStartPoint()">set Measurement origin</button>
+    <canvas id="drawing_canvas"></canvas>
 </body>
