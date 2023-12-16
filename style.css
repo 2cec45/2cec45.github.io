@@ -31,9 +31,9 @@ button{
     bottom: 20px;
     right: 30px;
 }
-.canvas_div{
+#canvas_div{
     grid-column: span;
 }
-.drawing_canvas{
+#drawing_canvas{
     background-color: lightgrey;
 }
