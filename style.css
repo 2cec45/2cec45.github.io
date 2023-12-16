@@ -16,11 +16,14 @@ body{
 }
 
 .button_settings{
-    color: aqua;
+    background-color: aqua;
 }
 
 .button_set_source{
-    color:darkblue;
+    background-color:darkblue;
+}
+.canvas_div{
+    grid-column: span;
 }
 .drawing_canvas{
     background-color: lightgrey;
