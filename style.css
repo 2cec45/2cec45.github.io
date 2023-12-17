@@ -1,14 +1,6 @@
 body{
-    display: grid;
-    grid-template-columns: 200px 200px;
-}
-
-.gyroscopeSpan{
-    grid-column: 1;
-}
-
-.accelerometerSpan{
-    grid-column: 2;
+    display: flex;
+    flex-direction: column;
 }
 
 button{
@@ -25,15 +17,29 @@ button{
 #button_settings{
     top: 20px;
     right: 30px;
+    padding: 40px;
 }
-
+#div_settings_button{
+    background: url("settings_FILL0_wght400_GRAD0_opsz48.png") no-repeat;
+    width: 48px;
+    height: 48px;
+}
 #button_set_source{
     bottom: 20px;
     right: 30px;
+    padding: 40px;
+}
+#div_set_source_button{
+    background: url("edit_location_FILL0_wght400_GRAD0_opsz48.png") no-repeat;
+    width: 48px;
+    height: 48px;
 }
 #canvas_div{
-    grid-column: span;
+    height: 100%;
+    width: 100%;
 }
 #drawing_canvas{
+    height: 100%;
+    width: 100%;
     background-color: lightgrey;
 }

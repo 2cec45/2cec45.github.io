@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <title>Webapp Mobile Computin IOT</title>
 
-<head> 
-    <script language="javascript", type="text/javascript", src="function.js"></script>
+<head>
+    <script language="javascript" , type="text/javascript" , src="function.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
@@ -10,8 +10,13 @@
 
 <body>
     <section id="controls"></section>
-    <button id="button_settings"></button>
-    <button id="button_set_source" onclick="setStartPoint()">set Measurement origin</button>
+    <button id="button_settings">
+        <div id="div_settings_button">
+        </div>
+    </button>
+    <button id="button_set_source" onclick="setStartPoint()">
+        <div id="div_set_source_button"></div>
+    </button>
     <div id="canvas_div">
         <canvas id="drawing_canvas"></canvas>
     </div>
