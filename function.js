@@ -6,6 +6,10 @@ startPoint[1] = 0;
 startPoint[2] = 0;
 
 function setCanvasSize() {
+    var canvas = document.getElementById("drawing_canvas");
+    canvas.style.width = '${window.innerWidth}px';
+    canvas.style.width = '${window.innerHeight}px';
+    console.log(window.innerHeight)
 }
 
 gyroscope.addEventListener("reading", (e) => {

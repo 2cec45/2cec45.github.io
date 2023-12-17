@@ -1,6 +1,10 @@
 body{
-    display: flex;
     flex-direction: column;
+    background-color: brown;
+    height: 100%;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
 }
 
 button{
