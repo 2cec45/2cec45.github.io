@@ -40,4 +40,6 @@ button{
 }
 #drawing_canvas{
     background-color: lightgrey;
+    height: 100%;
+    width: 100%;
 }
