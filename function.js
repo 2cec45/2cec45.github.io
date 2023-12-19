@@ -43,16 +43,18 @@ function drawStone(context, position) {
 }
 
 function draw(){
+    var middle = new Vector(500, 500);
+    var pos = new Vector(500, 100);
     const canvas = document.getElementById("drawing_canvas");
     var height = window.innerHeight;
     var width = window.innerWidth;
     const context = canvas.getContext("2d");
     upatePositions();
     context.translate(mid[0], mid[1]);
-    drawPlayer(context);
-    drawStones(context);
-
+    drawPlayer(context, middle);
+    drawStone(context, pos);
 }
+
 
 
 
