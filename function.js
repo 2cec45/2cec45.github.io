@@ -1,31 +1,40 @@
 let gyroscope = new Gyroscope({ frequency: 30 });
 let accelerometer = new Accelerometer({ frequency: 30 });
-let startPoint = new Float64Array(3);
-let measurementActive = false;
 
-startPoint[0] = 0;
-startPoint[1] = 0;
-startPoint[2] = 0;
+class Stone {
+    constructor(position, radius, direction,velocity) {
+        this.position = position;
+        this.radius = radius;
+        this.direction = direction;
+        this.velocity = velocity;
+    }
+}
+
+class Vector{
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+    }
+}
+
 
 function setCanvasSize() {
     var canvas = document.getElementById("drawing_canvas");
     var div = document.getElementById("canvas_div");
     canvas.style.width = window.innerWidth;
     canvas.style.height = window.innerHeight + "px";
-    
-    
 }
 
 function drawPlayer(context) {
-    var tip = [0,20];
-    var lC = [10, -20];
-    var rC = [-10, -20];
-    context.translate(middle[0],middle[1]);
+    const tip = new Vector(0, 20);
+    const lC = new Vector(10, -20);
+    const rC = new Vector(-10, -20);
+    context.translate(middle.x,middle.y);
     context.beginPath();
-    context.goTo(tip[0], tip[1]);
-    context.lineTo(lC[0], lC[1]);
-    context.lineTo(rC[0], rC[1]);
-    context.lineTo(tip[0], [1]);
+    context.goTo(tip.x, tip.y);
+    context.lineTo(lC.x, lC.y);
+    context.lineTo(rC.x, rC.y);
+    context.lineTo(tip.x, tip.y);
     context.closePath();
 }
 
