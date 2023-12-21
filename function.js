@@ -194,7 +194,7 @@ function updatePositions() {
 }
 
 function newPlayerRotation(){
-        return alpha/4;
+        return toRadians(alpha/4);
 }
 
 function toRadians(deg){
