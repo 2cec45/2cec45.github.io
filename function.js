@@ -1,6 +1,4 @@
-//let gyroscope = new Gyroscope({ frequency: 30 });
-//let accelerometer = new Accelerometer({ frequency: 30 });
-
+// classes
 class Stone {
     constructor(position, radius, direction, velocity) {
         this.position = position;
@@ -24,9 +22,12 @@ class Bullet {
         this.direction = direction;
     }
 }
+// eventlisteners
+window.addEventListener("deviceorientation", onRotation, true);
 
 // globals
 var currentFrame = 0;
+var alpha;
 // GameParameters
 const stoneAmount = 6;
 const framesPerBullet = 5;
@@ -47,9 +48,9 @@ const yRange = new Vector(-500, 500);
 const sizeRange = new Vector(10, 30);
 const velocityRange = new Vector(2, 5);
 // BulletParameters
-const bulletVelocity = 4;
+const bulletVelocity = 6;
 const bulletSize = new Vector(7, 2);
-const bullets = new Array(0);
+var bullets = new Array(0);
 
 
 function add(vec1, vec2) {
@@ -71,9 +72,25 @@ function rotate(vec, deg) {
     return result;
 }
 
+function onRotation(event){
+    alpha = event.alpha;
+}
+
 function playerShoot(tip, lC, rC) {
     bullets.push(new Bullet(tip, bulletVelocity, normalize(tip)));
+    cleanupBullets();
 }
+function cleanupBullets() {
+    for (let i = bullets.length - 1; i >= 0 ; i--) {
+        const b = bullets[i];
+        if((-500 > b.position.x || b.position.x > 500) || (-500 > b.position.y || b.position.y > 500)){
+            console.log(true);
+            bullets = bullets.slice(i);
+        }
+    }
+    console.log(bullets.length);
+}
+
 
 function drawBullet(context, bullet) {
     context.lineWidth = bulletSize.y;
@@ -164,7 +181,8 @@ function drawPlayer(context) {
 
 function updatePositions() {
     //update Player
-    currentRotation += 0.1;
+    var rotation = newPlayerRotation();
+    currentRotation += rotation;
     tip = rotate(tipOrigin, currentRotation / Math.PI * 2);
     lC = rotate(lCOrigin, currentRotation / Math.PI * 2);
     rC = rotate(rCOrigin, currentRotation / Math.PI * 2);
@@ -179,6 +197,10 @@ function updatePositions() {
         bullets[i].position = add(bullets[i].position, mult);
     }
     wallCollisionDetection();
+}
+
+function newPlayerRotation(){
+    return ((alpha/360)*(2*Math.PI)/4)
 }
 
 function drawStone(context, stone) {
@@ -207,21 +229,5 @@ function draw() {
     drawPlayer(context);
     drawBullets(context);
     drawStones(context, stones);
-    console.log(bullets);
     window.requestAnimationFrame(draw);
 }
-
-/*gyroscope.addEventListener("reading", (e) => {
-console.log(`Angular velocity: ${gyroscope.x}, ${gyroscope.y}, ${gyroscope.z}`);
-});
-
-accelerometer.addEventListener("reading", (e) => {
-console.log(`Acceleration: ${accelerometer.x}, ${accelerometer.y}, ${accelerometer.z}`);
-if(measurementActive) {
-
-}
-});
-
-gyroscope.start();
-accelerometer.start();
-*/
