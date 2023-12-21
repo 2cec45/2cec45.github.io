@@ -22,9 +22,6 @@ class Bullet {
         this.direction = direction;
     }
 }
-// eventlisteners
-window.addEventListener("deviceorientation", onRotation, true);
-
 // globals
 var currentFrame = 0;
 var alpha;
@@ -84,11 +81,9 @@ function cleanupBullets() {
     for (let i = bullets.length - 1; i >= 0 ; i--) {
         const b = bullets[i];
         if((-500 > b.position.x || b.position.x > 500) || (-500 > b.position.y || b.position.y > 500)){
-            console.log(true);
             bullets = bullets.slice(i);
         }
     }
-    console.log(bullets.length);
 }
 
 
@@ -155,6 +150,7 @@ function fillStonesArray(xRange, yRange, sizeRange, velocityRange) {
 var context;
 var st2;
 function init() {
+    window.addEventListener('deviceorientation', onRotation, false);
     const canvas = document.getElementById("drawing_canvas");
     context = canvas.getContext("2d");
     context.translate(middle.x, middle.y);
@@ -165,7 +161,7 @@ function init() {
 function setCanvasSize() {
     var canvas = document.getElementById("drawing_canvas");
     var div = document.getElementById("canvas_div");
-    canvas.style.width = window.innerWidth;
+    canvas.style.width = window.innerWidth + "px";
     canvas.style.height = window.innerHeight + "px";
 }
 
