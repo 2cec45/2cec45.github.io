@@ -150,7 +150,6 @@ function fillStonesArray(xRange, yRange, sizeRange, velocityRange) {
 var context;
 var st2;
 function init() {
-    window.addEventListener('deviceorientation', onRotation, false);
     const canvas = document.getElementById("drawing_canvas");
     context = canvas.getContext("2d");
     context.translate(middle.x, middle.y);
@@ -214,6 +213,7 @@ function drawStones(context) {
 }
 
 function draw() {
+    window.addEventListener('deviceorientation', onRotation, false);
     var height = window.innerHeight;
     var width = window.innerWidth;
     currentFrame++;
