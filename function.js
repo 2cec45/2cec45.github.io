@@ -33,7 +33,6 @@ const stones = new Array(5);
 const middle = new Vector(500, 500);
 // PlayerParameters
 var currentRotation = 0;
-const playerOrientation = new Int32Array(stoneAmount);
 const tipOrigin = new Vector(0, 20);
 const lCOrigin = new Vector(10, -20);
 const rCOrigin = new Vector(-10, -20);
@@ -196,7 +195,7 @@ function updatePositions() {
 }
 
 function newPlayerRotation(){
-    return ((alpha/360)*(2*Math.PI)/4);
+    return -((alpha/360)*(2*Math.PI)/4);
 }
 
 function drawStone(context, stone) {
