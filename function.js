@@ -177,10 +177,9 @@ function drawPlayer(context) {
 function updatePositions() {
     //update Player
     var rotation = newPlayerRotation();
-    currentRotation += rotation;
-    tip = rotate(tipOrigin, currentRotation);
-    lC = rotate(lCOrigin, currentRotation);
-    rC = rotate(rCOrigin, currentRotation);
+    tip = rotate(tipOrigin, rotation);
+    lC = rotate(lCOrigin, rotation);
+    rC = rotate(rCOrigin, rotation);
     //update Stones
     for (let i = 0; i < stones.length; i++) {
         var mult = scalarMult(stones[i].direction, stones[i].velocity);
