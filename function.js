@@ -196,7 +196,7 @@ function updatePositions() {
 }
 
 function newPlayerRotation(){
-    return ((alpha/360)*(2*Math.PI)/4)
+    return ((alpha/360)*(2*Math.PI)/4);
 }
 
 function drawStone(context, stone) {
