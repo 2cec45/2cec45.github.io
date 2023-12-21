@@ -194,11 +194,11 @@ function updatePositions() {
 }
 
 function newPlayerRotation(){
-    if(alpha >= 0 && alpha < 180){
-        return ((alpha/360)*(2*Math.PI)/4);
-    }else{
-        return -((alpha/360)*(2*Math.PI)/4);
-    }
+        return alpha/4;
+}
+
+function toRadians(deg){
+    return deg/360 * Math.PI*2;
 }
 
 function drawStone(context, stone) {
