@@ -178,9 +178,9 @@ function updatePositions() {
     //update Player
     var rotation = newPlayerRotation();
     currentRotation += rotation;
-    tip = rotate(tipOrigin, currentRotation / Math.PI * 2);
-    lC = rotate(lCOrigin, currentRotation / Math.PI * 2);
-    rC = rotate(rCOrigin, currentRotation / Math.PI * 2);
+    tip = rotate(tipOrigin, currentRotation);
+    lC = rotate(lCOrigin, currentRotation);
+    rC = rotate(rCOrigin, currentRotation);
     //update Stones
     for (let i = 0; i < stones.length; i++) {
         var mult = scalarMult(stones[i].direction, stones[i].velocity);
