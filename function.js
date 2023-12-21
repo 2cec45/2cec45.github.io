@@ -22,6 +22,7 @@ class Bullet {
         this.direction = direction;
     }
 }
+window.addEventListener('deviceorientation', onRotation, false);
 // globals
 var currentFrame = 0;
 var alpha;
@@ -213,7 +214,6 @@ function drawStones(context) {
 }
 
 function draw() {
-    window.addEventListener('deviceorientation', onRotation, false);
     var height = window.innerHeight;
     var width = window.innerWidth;
     currentFrame++;
