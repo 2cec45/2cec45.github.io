@@ -22,6 +22,7 @@ class Bullet {
         this.direction = direction;
     }
 }
+
 window.addEventListener('deviceorientation', onRotation, false);
 // globals
 var currentFrame = 0;
@@ -31,6 +32,7 @@ const stoneAmount = 6;
 const framesPerBullet = 5;
 const stones = new Array(5);
 const middle = new Vector(500, 500);
+var context;
 // PlayerParameters
 var currentRotation = 0;
 const tipOrigin = new Vector(0, 20);
@@ -69,7 +71,7 @@ function rotate(vec, deg) {
     return result;
 }
 
-function onRotation(event){
+function onRotation(event) {
     alpha = event.alpha;
 }
 
@@ -78,9 +80,9 @@ function playerShoot(tip, lC, rC) {
     cleanupBullets();
 }
 function cleanupBullets() {
-    for (let i = bullets.length - 1; i >= 0 ; i--) {
+    for (let i = bullets.length - 1; i >= 0; i--) {
         const b = bullets[i];
-        if((-500 > b.position.x || b.position.x > 500) || (-500 > b.position.y || b.position.y > 500)){
+        if ((-500 > b.position.x || b.position.x > 500) || (-500 > b.position.y || b.position.y > 500)) {
             bullets = bullets.slice(i);
         }
     }
@@ -101,6 +103,31 @@ function drawBullet(context, bullet) {
 function drawBullets(context) {
     for (let i = 0; i < bullets.length; i++) {
         drawBullet(context, bullets[i]);
+    }
+}
+
+function destroyStone(stone) {
+    stone = createRandomStone(xRange, yRange, sizeRange, velocityRange);
+}
+
+function destroyBullet(index) {
+    bullets = bullets.splice(index, 1);
+}
+
+function bulletCollision() {
+    for (let i = 0; i < bullets.length; i++) {
+        const cB = bullets[i];
+        for (let j = 0; j < stones.length; j++) {
+            const cS = stones[j];
+            // construct rectangle in the circle((x+r, 0), (x-r,0), (0,y+r)(0,y-r));
+            const endPoint  = (cB.position, scalarMult(cB.direction, cB.velocity));
+            const xValues = new Vector(cS.position.x - cS.radius, cS.position.x + cS.radius);
+            const yValues = new Vector(cS.position.y - cS.radius, cS.position.y + cS.radius);
+            if(xValues.x < endPoint.x <xValues.y || yValues.x < endPoint.x < yValues.y){
+                destroyStone(cS);
+                destroyBullet(i);
+            }
+        }
     }
 }
 
@@ -147,8 +174,6 @@ function fillStonesArray(xRange, yRange, sizeRange, velocityRange) {
     }
 }
 
-var context;
-var st2;
 function init() {
     const canvas = document.getElementById("drawing_canvas");
     context = canvas.getContext("2d");
@@ -171,7 +196,7 @@ function drawPlayer(context) {
     context.lineTo(rC.x, rC.y);
     context.lineTo(tip.x, tip.y);
     context.stroke();
-    context.closePath()
+    context.closePath();
 }
 
 function updatePositions() {
@@ -190,15 +215,17 @@ function updatePositions() {
         var mult = scalarMult(bullets[i].direction, bulletVelocity);
         bullets[i].position = add(bullets[i].position, mult);
     }
+    //check collisions
     wallCollisionDetection();
+    bulletCollision();
 }
 
-function newPlayerRotation(){
-        return toRadians(alpha*4);
+function newPlayerRotation() {
+    return toRadians(alpha * 4);
 }
 
-function toRadians(deg){
-    return deg/360 * Math.PI*2;
+function toRadians(deg) {
+    return deg / 360 * Math.PI * 2;
 }
 
 function drawStone(context, stone) {
@@ -221,7 +248,7 @@ function draw() {
     currentFrame++;
     context.clearRect(-500, -500, 1000, 1000)
     updatePositions();
-    if((currentFrame % framesPerBullet) == 0) {
+    if ((currentFrame % framesPerBullet) == 0) {
         playerShoot(tip, lC, rC);
     }
     drawPlayer(context);
