@@ -52,18 +52,16 @@ var bullets = new Array(0);
 
 if (typeof DeviceMotionEvent.requestPermission === 'function') {
     DeviceOrientationEvent.requestPermission().then(response => {
-  if (response == 'granted') {
-    window.addEventListener('deviceorientation', onRotation, false);
+        if (response == 'granted') {
+            gyroAccessible = true;
+        }
+    })
+        .catch(console.error)
+} else {
     gyroAccessible = true;
-  }
-})
-.catch(console.error)
-  } else {
-    window.addEventListener('deviceorientation', onRotation, false);
-    gyroAccessible = true;
-  }
+}
 
-
+window.addEventListener('deviceorientation', onRotation, false);
 
 function add(vec1, vec2) {
     var result = new Vector(vec1.x + vec2.x, vec1.y + vec2.y);
@@ -85,9 +83,9 @@ function rotate(vec, deg) {
 }
 
 function onRotation(event) {
-    if(event.alpha != null) {
-    alpha = event.alpha;
-}
+    if (event.alpha != null) {
+        alpha = event.alpha;
+    }
 }
 
 function playerShoot(tip, lC, rC) {
@@ -139,7 +137,7 @@ function bulletCollision() {
         for (let j = 0; j < stones.length; j++) {
             var cS = stones[j];
             // construct rectangle in the circle((x+r, 0), (x-r,0), (0,y+r)(0,y-r));
-            const endPoint  = (cB.position, scalarMult(cB.direction, cB.velocity));
+            const endPoint = (cB.position, scalarMult(cB.direction, cB.velocity));
             const xValues = new Vector(cS.position.x - cS.radius, cS.position.x + cS.radius);
             const yValues = new Vector(cS.position.y - cS.radius, cS.position.y + cS.radius);
             context.beginPath();
@@ -149,8 +147,8 @@ function bulletCollision() {
             context.lineTo(cS.position.x, yValues.y);
             context.stroke();
             context.closePath();
-            if((xValues.x < endPoint.x && endPoint.x < xValues.y) &&
-             (yValues.x < endPoint.y && endPoint.y < yValues.y)){
+            if ((xValues.x < endPoint.x && endPoint.x < xValues.y) &&
+                (yValues.x < endPoint.y && endPoint.y < yValues.y)) {
                 destroyStone(cS);
                 destroyBullet(i);
             }
@@ -249,7 +247,7 @@ function updatePositions() {
 }
 
 function newPlayerRotation() {
-    if(gyroAccessible){
+    if (gyroAccessible) {
         return toRadians(alpha * 4);
     } else {
         return 0;
