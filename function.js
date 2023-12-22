@@ -27,9 +27,9 @@ var currentFrame = 0;
 var alpha = 0;
 var gyroAccessible;
 // GameParameters
-const stoneAmount = 6;
+const stoneAmount = 3;
 const framesPerBullet = 5;
-const stones = new Array(5);
+const stones = new Array(stoneAmount);
 const middle = new Vector(500, 500);
 var context;
 // PlayerParameters
@@ -43,7 +43,7 @@ var rC = new Vector(-10, -20);
 // StoneParameters:
 const xRange = new Vector(-500, 500);
 const yRange = new Vector(-500, 500);
-const sizeRange = new Vector(10, 30);
+const sizeRange = new Vector(17, 45);
 const velocityRange = new Vector(2, 5);
 // BulletParameters
 const bulletVelocity = 6;
