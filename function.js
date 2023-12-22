@@ -22,11 +22,10 @@ class Bullet {
         this.direction = direction;
     }
 }
-
-window.addEventListener('deviceorientation', onRotation, false);
 // globals
 var currentFrame = 0;
-var alpha;
+var alpha = 0;
+var gyroAccessible;
 // GameParameters
 const stoneAmount = 6;
 const framesPerBullet = 5;
@@ -51,6 +50,18 @@ const bulletVelocity = 6;
 const bulletSize = new Vector(7, 2);
 var bullets = new Array(0);
 
+if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().then(response => {
+  if (response == 'granted') {
+    window.addEventListener('deviceorientation', onRotation, false);
+  }
+})
+.catch(console.error)
+  } else {
+    
+  }
+
+window.addEventListener('deviceorientation', onRotation, false);
 
 function add(vec1, vec2) {
     var result = new Vector(vec1.x + vec2.x, vec1.y + vec2.y);
@@ -72,7 +83,9 @@ function rotate(vec, deg) {
 }
 
 function onRotation(event) {
+    if(event.alpha != null) {
     alpha = event.alpha;
+}
 }
 
 function playerShoot(tip, lC, rC) {
@@ -107,29 +120,42 @@ function drawBullets(context) {
 }
 
 function destroyStone(stone) {
-    stone = createRandomStone(xRange, yRange, sizeRange, velocityRange);
+    var tmp = createRandomStone(xRange, yRange, sizeRange, velocityRange);
+    stone.position = tmp.position;
+    stone.direction = tmp.direction;
+    stone.velocity = tmp.velocity;
+    stone.radius = tmp.radius;
 }
 
 function destroyBullet(index) {
-    bullets = bullets.splice(index, 1);
+    bullets.splice(index, 1);
 }
 
 function bulletCollision() {
     for (let i = 0; i < bullets.length; i++) {
         const cB = bullets[i];
         for (let j = 0; j < stones.length; j++) {
-            const cS = stones[j];
+            var cS = stones[j];
             // construct rectangle in the circle((x+r, 0), (x-r,0), (0,y+r)(0,y-r));
             const endPoint  = (cB.position, scalarMult(cB.direction, cB.velocity));
             const xValues = new Vector(cS.position.x - cS.radius, cS.position.x + cS.radius);
             const yValues = new Vector(cS.position.y - cS.radius, cS.position.y + cS.radius);
-            if(xValues.x < endPoint.x <xValues.y || yValues.x < endPoint.x < yValues.y){
+            context.beginPath();
+            context.moveTo(xValues.x, cS.position.y);
+            context.lineTo(xValues.y, cS.position.y);
+            context.moveTo(cS.position.x, yValues.x);
+            context.lineTo(cS.position.x, yValues.y);
+            context.stroke();
+            context.closePath();
+            if((xValues.x < endPoint.x && endPoint.x < xValues.y) &&
+             (yValues.x < endPoint.y && endPoint.y < yValues.y)){
                 destroyStone(cS);
                 destroyBullet(i);
             }
         }
     }
 }
+
 
 function randomStonePosition() {
     var number = Math.trunc(Math.random() * 4);
@@ -221,7 +247,11 @@ function updatePositions() {
 }
 
 function newPlayerRotation() {
-    return toRadians(alpha * 4);
+    if(gyroAccessible){
+        return toRadians(alpha * 4);
+    } else {
+        return 0;
+    }
 }
 
 function toRadians(deg) {
@@ -231,7 +261,7 @@ function toRadians(deg) {
 function drawStone(context, stone) {
     context.beginPath();
     context.arc(stone.position.x, stone.position.y, stone.radius, 0, Math.PI * 2, true);
-    context.stroke()
+    context.stroke();
     context.closePath();
 }
 
