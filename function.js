@@ -54,14 +54,16 @@ if (typeof DeviceMotionEvent.requestPermission === 'function') {
     DeviceOrientationEvent.requestPermission().then(response => {
   if (response == 'granted') {
     window.addEventListener('deviceorientation', onRotation, false);
+    gyroAccessible = true;
   }
 })
 .catch(console.error)
   } else {
-    
+    window.addEventListener('deviceorientation', onRotation, false);
+    gyroAccessible = true;
   }
 
-window.addEventListener('deviceorientation', onRotation, false);
+
 
 function add(vec1, vec2) {
     var result = new Vector(vec1.x + vec2.x, vec1.y + vec2.y);
