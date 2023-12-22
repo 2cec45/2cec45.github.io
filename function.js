@@ -133,20 +133,13 @@ function destroyBullet(index) {
 
 function bulletCollision() {
     for (let i = 0; i < bullets.length; i++) {
-        const cB = bullets[i];
+        var cB = bullets[i];
         for (let j = 0; j < stones.length; j++) {
             var cS = stones[j];
             // construct rectangle in the circle((x+r, 0), (x-r,0), (0,y+r)(0,y-r));
-            const endPoint = (cB.position, scalarMult(cB.direction, cB.velocity));
+            const endPoint = add(cB.position, scalarMult(cB.direction, cB.velocity));
             const xValues = new Vector(cS.position.x - cS.radius, cS.position.x + cS.radius);
             const yValues = new Vector(cS.position.y - cS.radius, cS.position.y + cS.radius);
-            context.beginPath();
-            context.moveTo(xValues.x, cS.position.y);
-            context.lineTo(xValues.y, cS.position.y);
-            context.moveTo(cS.position.x, yValues.x);
-            context.lineTo(cS.position.x, yValues.y);
-            context.stroke();
-            context.closePath();
             if ((xValues.x < endPoint.x && endPoint.x < xValues.y) &&
                 (yValues.x < endPoint.y && endPoint.y < yValues.y)) {
                 destroyStone(cS);
