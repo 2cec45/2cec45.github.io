@@ -23,6 +23,16 @@ button{
     right: 30px;
     padding: 40px;
 }
+#button_left{
+    bottom: 20px;
+    left: 30px;
+    padding: 40px;
+}
+#button_right{
+    bottom: 20px;
+    right: 30px;
+    padding: 40px;
+}
 #div_settings_button{
     background: url("settings_FILL0_wght400_GRAD0_opsz48.png") no-repeat;
     width: 48px;

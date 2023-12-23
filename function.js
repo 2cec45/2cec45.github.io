@@ -75,11 +75,26 @@ function scalarMult(vec, scalar) {
     return res;
 }
 
+function normalize(vec) {
+    var length = Math.sqrt((Math.pow(vec.x, 2) + Math.pow(vec.y, 2)));
+    return new Vector(vec.x / length, vec.y / length);
+}
+
 function rotate(vec, deg) {
     var result = new Vector(0, 0);
     result.x = vec.x * Math.cos(deg) + vec.y * (- Math.sin(deg));
     result.y = vec.x * Math.sin(deg) + vec.y * Math.cos(deg);
     return result;
+}
+
+function toRadians(deg) {
+    return deg / 360 * Math.PI * 2;
+}
+
+function dotProduct(vec1, vec2) {
+    v1 = normalize(vec1);
+    v2 = normalize(vec2);
+    return v1.x * v2.x + v1.y + v2.y;
 }
 
 function onRotation(event) {
@@ -149,7 +164,6 @@ function bulletCollision() {
     }
 }
 
-
 function randomStonePosition() {
     var number = Math.trunc(Math.random() * 4);
     switch (number) {
@@ -174,10 +188,20 @@ function wallCollisionDetection() {
     }
 }
 
-function normalize(vec) {
-    var length = Math.sqrt((Math.pow(vec.x, 2) + Math.pow(vec.y, 2)));
-    return new Vector(vec.x / length, vec.y / length);
+function playerCollision(){
+    for (let i = 0; i < stones.length; i++) {
+        var stone = stones[i];
+        var edgePoint = add(stone.position, scalarMult(stone.direction, stone.radius));
+        var deg = dotProduct(new Vector(0, 1), stone.direction);
+        edgePoint = rotate(edgePoint, deg);
+        if((rCOrigin.x < edgePoint.x && edgePoint.x < lCOrigin.x * 2) &&
+            (rCOrigin.y < edgePoint.y && edgePoint.y < Math.abs(tipOrigin.y) + Math.abs(lCOrigin.y))){
+            //destroy Player();
+            destroyStone(stone);
+        }
+    }
 }
+
 function createRandomStone(xRange, yRange, sizeRange, velocityRange) {
     position = randomStonePosition();
     var size = Math.random() * (sizeRange.y - sizeRange.x) + sizeRange.x;
@@ -237,6 +261,7 @@ function updatePositions() {
     //check collisions
     wallCollisionDetection();
     bulletCollision();
+    playerCollision();
 }
 
 function newPlayerRotation() {
@@ -245,10 +270,6 @@ function newPlayerRotation() {
     } else {
         return 0;
     }
-}
-
-function toRadians(deg) {
-    return deg / 360 * Math.PI * 2;
 }
 
 function drawStone(context, stone) {
