@@ -349,8 +349,7 @@ function showEndScreen() {
     nextRoundButton.position = "fixed";
     nextRoundButton.style.width = 250 + "px";
     nextRoundButton.style.bottom = 30 + "px";
-    nextRoundButton.style.left = 500 + "px";
-    nextRoundButton.style.right = 500 + "px";
+    nextRoundButton.style.left = (xRange.y - 125) + "px";
     nextRoundButton.addEventListener("click", resetRound);
 }
 
