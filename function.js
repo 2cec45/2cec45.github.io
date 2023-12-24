@@ -54,22 +54,27 @@ const bulletSize = new Vector(7, 2);
 var bullets = new Array(0);
 
 
-if (window.DeviceOrientationEvent && typeof window.DeviceOrientationEvent.requestPermission === 'function') {
-    // Das Gerät unterstützt das DeviceMotionEvent, und es gibt eine Funktion zum Anfordern der Berechtigung
-    window.DeviceOrientationEvent.requestPermission()
-        .then(permissionState => {
-            if (permissionState === 'granted') {
-                // Das Gyroskop ist vorhanden und die Berechtigung wurde erteilt
-                gyroAccessible = true;
-                score = 100;
-            }
-        })
-        .catch(error => {
-            // Fehler bei der Berechtigungsanfrage
-            score = 120;
-            console.error("Fehler bei der Berechtigungsanfrage für das Gyroskop:", error);
-        });
-} else {
+if(window.DeviceOrientationEvent){
+    if (typeof window.DeviceOrientationEvent.requestPermission === 'function') {
+        // Das Gerät unterstützt das DeviceMotionEvent, und es gibt eine Funktion zum Anfordern der Berechtigung
+        window.DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+                if (permissionState === 'granted') {
+                    // Das Gyroskop ist vorhanden und die Berechtigung wurde erteilt
+                    gyroAccessible = true;
+                    score = 100;
+                }
+            })
+            .catch(error => {
+                // Fehler bei der Berechtigungsanfrage
+                score = 120;
+                console.error("Fehler bei der Berechtigungsanfrage für das Gyroskop:", error);
+            });
+    } else{
+        gyroAccessible = true;
+    }
+}
+else {
     // Das Gerät unterstützt kein DeviceMotionEvent oder die Berechtigungsanfrage wird nicht unterstützt
     console.log("Das Gerät unterstützt kein Gyroskop oder die Berechtigungsanfrage wird nicht unterstützt.");
     score = 140;
@@ -369,5 +374,4 @@ function draw() {
         displayScore();
         window.requestAnimationFrame(draw);
     }
-
 }
