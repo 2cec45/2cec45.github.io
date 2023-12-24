@@ -27,11 +27,12 @@ var currentFrame = 0;
 var alpha = 0;
 var gyroAccessible;
 var playerCollisionDetected = false;
-// GameParameters
+var turningDirection = 3;
+// GameParameters   
 const stoneAmount = 3;
 const framesPerBullet = 5;
 const stones = new Array(stoneAmount);
-const middle = new Vector(500, 500);
+const middle = new Vector(innerWidth/2, innerHeight/2);
 var context;
 var score = 0;
 // PlayerParameters
@@ -43,8 +44,8 @@ var tip = new Vector(0, 20);
 var lC = new Vector(10, -20);
 var rC = new Vector(-10, -20);
 // StoneParameters:
-const xRange = new Vector(-500, 500);
-const yRange = new Vector(-500, 500);
+const xRange = new Vector(-innerWidth/2, innerWidth/2);
+const yRange = new Vector(-innerHeight/2, innerHeight/2);
 const sizeRange = new Vector(17, 45);
 const velocityRange = new Vector(2, 5);
 // BulletParameters
@@ -124,7 +125,7 @@ function playerShoot(tip, lC, rC) {
 function cleanupBullets() {
     for (let i = bullets.length - 1; i >= 0; i--) {
         const b = bullets[i];
-        if ((-500 > b.position.x || b.position.x > 500) || (-500 > b.position.y || b.position.y > 500)) {
+        if ((xRange.x > b.position.x || b.position.x > xRange.y) || (yRange.x > b.position.y || b.position.y > yRange.y)) {
             bullets = bullets.slice(i);
         }
     }
@@ -183,21 +184,21 @@ function randomStonePosition() {
     var number = Math.trunc(Math.random() * 4);
     switch (number) {
         case 1:
-            return new Vector(500, Math.random() * (yRange.y - yRange.x) + yRange.x);
+            return new Vector(xRange.y, Math.random() * (yRange.y - yRange.x) + yRange.x);
         case 2:
-            return new Vector(-500, Math.random() * (yRange.y - yRange.x) + yRange.x);
+            return new Vector(xRange.x, Math.random() * (yRange.y - yRange.x) + yRange.x);
         case 3:
-            return new Vector(Math.random() * (yRange.y - yRange.x) + yRange.x, 500);
+            return new Vector(Math.random() * (yRange.y - yRange.x) + yRange.x, yRange.x);
         default:
-            return new Vector(Math.random() * (yRange.y - yRange.x) + yRange.x, -500);
+            return new Vector(Math.random() * (yRange.y - yRange.x) + yRange.x, yRange.y);
     }
 }
 
 function wallCollisionDetection() {
 
     for (let i = 0; i < stones.length; i++) {
-        if ((stones[i].position.x > 550) || (stones[i].position.x < -550) ||
-            (stones[i].position.y < -550) || (stones[i].position.y > 550)) {
+        if ((stones[i].position.x > xRange.y + 50) || (stones[i].position.x < xRange.x - 50) ||
+            (stones[i].position.y < yRange.x - 50) || (stones[i].position.y > yRange.y + 50)) {
             stones[i] = createRandomStone(xRange, yRange, sizeRange, velocityRange);
         }
     }
@@ -209,7 +210,7 @@ function increaseScore() {
 
 function displayScore() {
     context.font = "30px Arial";
-    context.fillText("score:" + score, -450, -450);
+    context.fillText("score:" + score, xRange.x + 50, yRange.x + 50);
 }
 
 function playerCollision() {
@@ -243,22 +244,25 @@ function fillStonesArray(xRange, yRange, sizeRange, velocityRange) {
 }
 
 function buttonTurnLeft(){
-    currentRotation += 0.1;
+    turningDirection = 0;
+    turningid++;
 }
 
 function buttonTurnRight(){
-    currentRotation -= 0.1;
+    turningDirection = 1;
+    turningid++;
 }
 
 function init() {
     const canvas = document.getElementById("drawing_canvas");
     const button_left = document.getElementById("button_left");
     const button_right = document.getElementById("button_right");
+    setCanvasSize() 
     context = canvas.getContext("2d");
     context.translate(middle.x, middle.y);
     fillStonesArray(xRange, yRange, sizeRange, velocityRange);
-    button_left.addEventListener("click", buttonTurnLeft);
-    button_right.addEventListener("click", buttonTurnRight);
+    button_left.addEventListener("pointerdown", buttonTurnLeft);
+    button_right.addEventListener("pointerdown", buttonTurnRight);  
 
 
     window.requestAnimationFrame(draw);
@@ -266,9 +270,8 @@ function init() {
 
 function setCanvasSize() {
     var canvas = document.getElementById("drawing_canvas");
-    var div = document.getElementById("canvas_div");
-    canvas.style.width = window.innerWidth + "px";
-    canvas.style.height = window.innerHeight + "px";
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
 function drawPlayer(context) {
@@ -307,6 +310,7 @@ function newPlayerRotation() {
     if (gyroAccessible) {
         return toRadians(alpha * 4);
     } else {
+    
         return currentRotation;
     }
 }
@@ -351,10 +355,8 @@ function showEndScreen() {
 }
 
 function draw() {
-    var height = window.innerHeight;
-    var width = window.innerWidth;
     currentFrame++;
-    context.clearRect(-500, -500, 1000, 1000)
+    context.clearRect(xRange.x, yRange.x, -xRange.x * 2, -yRange.x * 2)
     updatePositions();
     if (playerCollisionDetected) {
         showEndScreen();
