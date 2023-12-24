@@ -34,7 +34,17 @@ button{
     padding: 40px;
 }
 #div_settings_button{
-    background: url("settings_FILL0_wght400_GRAD0_opsz48.png") no-repeat;
+    background: url("settings.png") no-repeat;
+    width: 48px;
+    height: 48px;
+}
+#div_left_button{
+    background: url("left.png") no-repeat;
+    width: 48px;
+    height: 48px;
+}
+#div_right_button{
+    background: url("right.png") no-repeat;
     width: 48px;
     height: 48px;
 }
@@ -42,11 +52,6 @@ button{
     bottom: 20px;
     right: 30px;
     padding: 40px;
-}
-#div_set_source_button{
-    background: url("edit_location_FILL0_wght400_GRAD0_opsz48.png") no-repeat;
-    width: 48px;
-    height: 48px;
 }
 #canvas_div{
     height: 100%;

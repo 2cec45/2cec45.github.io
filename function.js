@@ -52,16 +52,25 @@ const bulletVelocity = 6;
 const bulletSize = new Vector(7, 2);
 var bullets = new Array(0);
 
-if (typeof DeviceMotionEvent.requestPermission === 'function') {
-    DeviceOrientationEvent.requestPermission().then(response => {
-        if (response == 'granted') {
-            gyroAccessible = true;
-        }
-    })
-        .catch(console.error)
+
+if (window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function') {
+    // Das Gerät unterstützt das DeviceMotionEvent, und es gibt eine Funktion zum Anfordern der Berechtigung
+    window.DeviceMotionEvent.requestPermission()
+        .then(permissionState => {
+            if (permissionState === 'granted') {
+                // Das Gyroskop ist vorhanden und die Berechtigung wurde erteilt
+                gyroAccessible = true;
+            }
+        })
+        .catch(error => {
+            // Fehler bei der Berechtigungsanfrage
+            console.error("Fehler bei der Berechtigungsanfrage für das Gyroskop:", error);
+        });
 } else {
-    gyroAccessible = true;
+    // Das Gerät unterstützt kein DeviceMotionEvent oder die Berechtigungsanfrage wird nicht unterstützt
+    console.log("Das Gerät unterstützt kein Gyroskop oder die Berechtigungsanfrage wird nicht unterstützt.");
 }
+
 
 window.addEventListener('deviceorientation', onRotation, false);
 
@@ -230,11 +239,25 @@ function fillStonesArray(xRange, yRange, sizeRange, velocityRange) {
     }
 }
 
+function buttonTurnLeft(){
+    currentRotation += 0.1;
+}
+
+function buttonTurnRight(){
+    currentRotation -= 0.1;
+}
+
 function init() {
     const canvas = document.getElementById("drawing_canvas");
+    const button_left = document.getElementById("button_left");
+    const button_right = document.getElementById("button_right");
     context = canvas.getContext("2d");
     context.translate(middle.x, middle.y);
     fillStonesArray(xRange, yRange, sizeRange, velocityRange);
+    button_left.addEventListener("click", buttonTurnLeft);
+    button_right.addEventListener("click", buttonTurnRight);
+
+
     window.requestAnimationFrame(draw);
 }
 
@@ -281,7 +304,7 @@ function newPlayerRotation() {
     if (gyroAccessible) {
         return toRadians(alpha * 4);
     } else {
-        return 0;
+        return currentRotation;
     }
 }
 
@@ -305,6 +328,7 @@ function resetRound() {
         stones[i] = createRandomStone(xRange, yRange, sizeRange, velocityRange);
     }
     bullets = new Array(0);
+    currentRotation = 0;
     playerCollisionDetected = false;
     document.getElementById("nextRoundButton").remove();
     window.requestAnimationFrame(draw);
