@@ -60,15 +60,18 @@ if (window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermissio
             if (permissionState === 'granted') {
                 // Das Gyroskop ist vorhanden und die Berechtigung wurde erteilt
                 gyroAccessible = true;
+                score = 100;
             }
         })
         .catch(error => {
             // Fehler bei der Berechtigungsanfrage
+            score = 120;
             console.error("Fehler bei der Berechtigungsanfrage für das Gyroskop:", error);
         });
 } else {
     // Das Gerät unterstützt kein DeviceMotionEvent oder die Berechtigungsanfrage wird nicht unterstützt
     console.log("Das Gerät unterstützt kein Gyroskop oder die Berechtigungsanfrage wird nicht unterstützt.");
+    score = 140;
 }
 
 
