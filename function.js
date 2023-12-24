@@ -26,12 +26,14 @@ class Bullet {
 var currentFrame = 0;
 var alpha = 0;
 var gyroAccessible;
+var playerCollisionDetected = false;
 // GameParameters
 const stoneAmount = 3;
 const framesPerBullet = 5;
 const stones = new Array(stoneAmount);
 const middle = new Vector(500, 500);
 var context;
+var score = 0;
 // PlayerParameters
 var currentRotation = 0;
 const tipOrigin = new Vector(0, 20);
@@ -159,6 +161,7 @@ function bulletCollision() {
                 (yValues.x < endPoint.y && endPoint.y < yValues.y)) {
                 destroyStone(cS);
                 destroyBullet(i);
+                increaseScore();
             }
         }
     }
@@ -188,16 +191,26 @@ function wallCollisionDetection() {
     }
 }
 
-function playerCollision(){
+function increaseScore() {
+    score++;
+}
+
+function displayScore() {
+    context.font = "30px Arial";
+    context.fillText("score:" + score, -450, -450);
+}
+
+function playerCollision() {
     for (let i = 0; i < stones.length; i++) {
         var stone = stones[i];
         var edgePoint = add(stone.position, scalarMult(stone.direction, stone.radius));
         var deg = dotProduct(new Vector(0, 1), stone.direction);
         edgePoint = rotate(edgePoint, deg);
-        if((rCOrigin.x < edgePoint.x && edgePoint.x < lCOrigin.x * 2) &&
-            (rCOrigin.y < edgePoint.y && edgePoint.y < Math.abs(tipOrigin.y) + Math.abs(lCOrigin.y))){
+        if ((rCOrigin.x < edgePoint.x && edgePoint.x < lCOrigin.x * 2) &&
+            (rCOrigin.y < edgePoint.y && edgePoint.y < Math.abs(tipOrigin.y) + Math.abs(lCOrigin.y))) {
             //destroy Player();
             destroyStone(stone);
+            playerCollisionDetected = true;
         }
     }
 }
@@ -286,17 +299,47 @@ function drawStones(context) {
     }
 }
 
+function resetRound() {
+    score = 0;
+    for (let i = 0; i < stones.length; i++) {
+        stones[i] = createRandomStone(xRange, yRange, sizeRange, velocityRange);
+    }
+    bullets = new Array(0);
+    playerCollisionDetected = false;
+    document.getElementById("nextRoundButton").remove();
+    window.requestAnimationFrame(draw);
+}
+
+function showEndScreen() {
+    const nextRoundButton = document.createElement("button");
+    nextRoundButton.textContent = "Next round!";
+    nextRoundButton.id = "nextRoundButton";
+    document.body.appendChild(nextRoundButton);
+    nextRoundButton.position = "fixed";
+    nextRoundButton.style.width = 250 + "px";
+    nextRoundButton.style.bottom = 30 + "px";
+    nextRoundButton.style.left = 500 + "px";
+    nextRoundButton.style.right = 500 + "px";
+    nextRoundButton.addEventListener("click", resetRound);
+}
+
 function draw() {
     var height = window.innerHeight;
     var width = window.innerWidth;
     currentFrame++;
     context.clearRect(-500, -500, 1000, 1000)
     updatePositions();
-    if ((currentFrame % framesPerBullet) == 0) {
-        playerShoot(tip, lC, rC);
+    if (playerCollisionDetected) {
+        showEndScreen();
+    } else {
+        if ((currentFrame % framesPerBullet) == 0) {
+            playerShoot(tip, lC, rC);
+        }
+        drawPlayer(context);
+        drawBullets(context);
+        drawStones(context, stones);
+        displayScore();
+        window.requestAnimationFrame(draw);
     }
-    drawPlayer(context);
-    drawBullets(context);
-    drawStones(context, stones);
-    window.requestAnimationFrame(draw);
+
 }
