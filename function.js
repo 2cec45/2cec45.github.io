@@ -53,9 +53,9 @@ const bulletSize = new Vector(7, 2);
 var bullets = new Array(0);
 
 
-if (window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function') {
+if (window.DeviceOrientationEvent && typeof window.DeviceOrientationEvent.requestPermission === 'function') {
     // Das Gerät unterstützt das DeviceMotionEvent, und es gibt eine Funktion zum Anfordern der Berechtigung
-    window.DeviceMotionEvent.requestPermission()
+    window.DeviceOrientationEvent.requestPermission()
         .then(permissionState => {
             if (permissionState === 'granted') {
                 // Das Gyroskop ist vorhanden und die Berechtigung wurde erteilt
