@@ -53,6 +53,9 @@ const bulletVelocity = 6;
 const bulletSize = new Vector(7, 2);
 var bullets = new Array(0);
 
+window.onload = setCanvasSize();
+window.onresize = setCanvasSize;
+
 
 if(window.DeviceOrientationEvent){
     if (typeof window.DeviceOrientationEvent.requestPermission === 'function') {
