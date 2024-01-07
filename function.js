@@ -27,7 +27,8 @@ var currentFrame = 0;
 var alpha = 0;
 var gyroAccessible = true;;
 var playerCollisionDetected = false;
-var turningDirection = 3;
+var turningDirection = 0;
+var turningDirections = [0.1, -0.1];
 // GameParameters   
 const stoneAmount = 3;
 const framesPerBullet = 5;
@@ -253,17 +254,18 @@ function fillStonesArray(xRange, yRange, sizeRange, velocityRange) {
 
 function buttonTurnLeft(){
     turning = true;
-    turningamount++;
+    turningDirection = 1; 
+    currentRotation += 0.1;
 }
 
 function stopTurning() {
     turning = false;
-    turningamount = 0;
 }
 
 function buttonTurnRight(){
     turning = true;
-    turningamount--;
+    turningDirection = 0; 
+    currentRotation -= 0.1;
 }
 
 function init() {
@@ -303,9 +305,6 @@ function drawPlayer(context) {
 
 function updatePositions() {
     //update Player
-    if(turning){
-        turningAmount += turningDirections[turningDirection];
-    }
     var rotation = newPlayerRotation();
     tip = rotate(tipOrigin, rotation);
     lC = rotate(lCOrigin, rotation);
@@ -330,8 +329,10 @@ function newPlayerRotation() {
     if (gyroAccessible) {
         return toRadians(alpha * 4);
     } else {
-        
-        return rotationAmount;
+        if(turning){
+            currentRotation += turningDirections[turningDirection];
+        }
+        return currentRotation;
     }
 }
 
