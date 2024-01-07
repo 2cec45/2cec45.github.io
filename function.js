@@ -37,6 +37,7 @@ var context;
 var score = 0;
 // PlayerParameters
 var currentRotation = 0;
+var turning = false;
 const tipOrigin = new Vector(0, 20);
 const lCOrigin = new Vector(10, -20);
 const rCOrigin = new Vector(-10, -20);
@@ -251,13 +252,18 @@ function fillStonesArray(xRange, yRange, sizeRange, velocityRange) {
 }
 
 function buttonTurnLeft(){
-    turningDirection = 0;
-    turningid++;
+    turning = true;
+    turningamount++;
+}
+
+function stopTurning() {
+    turning = false;
+    turningamount = 0;
 }
 
 function buttonTurnRight(){
-    turningDirection = 1;
-    turningid++;
+    turning = true;
+    turningamount--;
 }
 
 function init() {
@@ -269,11 +275,15 @@ function init() {
     context.translate(middle.x, middle.y);
     fillStonesArray(xRange, yRange, sizeRange, velocityRange);
     button_left.addEventListener("pointerdown", buttonTurnLeft);
-    button_right.addEventListener("pointerdown", buttonTurnRight);  
+    button_left.addEventListener("pointerup", stopTurning);
+    button_right.addEventListener("pointerdown", buttonTurnRight);
+    button_right.addEventListener("pointerup", stopTurning);  
 
 
     window.requestAnimationFrame(draw);
 }
+
+
 
 function setCanvasSize() {
     var canvas = document.getElementById("drawing_canvas");
@@ -293,6 +303,9 @@ function drawPlayer(context) {
 
 function updatePositions() {
     //update Player
+    if(turning){
+        turningAmount += turningDirections[turningDirection];
+    }
     var rotation = newPlayerRotation();
     tip = rotate(tipOrigin, rotation);
     lC = rotate(lCOrigin, rotation);
@@ -317,8 +330,8 @@ function newPlayerRotation() {
     if (gyroAccessible) {
         return toRadians(alpha * 4);
     } else {
-    
-        return currentRotation;
+        
+        return rotationAmount;
     }
 }
 
