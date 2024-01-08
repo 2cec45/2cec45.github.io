@@ -28,7 +28,7 @@ var alpha = 0;
 var gyroAccessible = true;;
 var playerCollisionDetected = false;
 var turningDirection = 0;
-var turningDirections = [0.1, -0.1];
+var turningDirections = [0.05, -0.05];
 // GameParameters   
 const stoneAmount = 3;
 const framesPerBullet = 5;
@@ -56,34 +56,11 @@ const bulletSize = new Vector(7, 2);
 var bullets = new Array(0);
 
 function askPermission(){
-    if(window.DeviceOrientationEvent){
-        if (typeof window.DeviceOrientationEvent.requestPermission === 'function') {
-            // Das Gerät unterstützt das DeviceMotionEvent, und es gibt eine Funktion zum Anfordern der Berechtigung
-            window.DeviceOrientationEvent.requestPermission()
-                .then(permissionState => {
-                    if (permissionState === 'granted') {
-                        // Das Gyroskop ist vorhanden und die Berechtigung wurde erteilt
-                        gyroAccessible = true;
-                        score = 100;
-                    }
-                })
-                .catch(error => {
-                    // Fehler bei der Berechtigungsanfrage
-                    score = 120;
-                    console.error("Fehler bei der Berechtigungsanfrage für das Gyroskop:", error);
-                });
-        } else{
-            gyroAccessible = true;
-        }
-    }
-    else {
-        // Das Gerät unterstützt kein DeviceMotionEvent oder die Berechtigungsanfrage wird nicht unterstützt
-        console.log("Das Gerät unterstützt kein Gyroskop oder die Berechtigungsanfrage wird nicht unterstützt.");
-        score = 140;
-    }
+    if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function"
+      ) {
+        DeviceMotionEvent.requestPermission();
+      }
 }
-
-
 
 window.addEventListener('deviceorientation', onRotation, false);
 
@@ -255,7 +232,6 @@ function fillStonesArray(xRange, yRange, sizeRange, velocityRange) {
 function buttonTurnLeft(){
     turning = true;
     turningDirection = 1; 
-    currentRotation += 0.1;
 }
 
 function stopTurning() {
@@ -265,7 +241,6 @@ function stopTurning() {
 function buttonTurnRight(){
     turning = true;
     turningDirection = 0; 
-    currentRotation -= 0.1;
 }
 
 function init() {
@@ -275,14 +250,21 @@ function init() {
     setCanvasSize() 
     context = canvas.getContext("2d");
     context.translate(middle.x, middle.y);
-    fillStonesArray(xRange, yRange, sizeRange, velocityRange);
+
     button_left.addEventListener("pointerdown", buttonTurnLeft);
-    button_left.addEventListener("pointerup", stopTurning);
+    button_left.addEventListener("mouseup", stopTurning);
     button_right.addEventListener("pointerdown", buttonTurnRight);
-    button_right.addEventListener("pointerup", stopTurning);  
+    button_right.addEventListener("mouseup", stopTurning); 
 
-
-    window.requestAnimationFrame(draw);
+    const nextRoundButton = document.createElement("button");
+    nextRoundButton.textContent = "Next round!";
+    nextRoundButton.id = "nextRoundButton";
+    document.body.appendChild(nextRoundButton);
+    nextRoundButton.position = "fixed";
+    nextRoundButton.style.width = 250 + "px";
+    nextRoundButton.style.bottom = 30 + "px";
+    nextRoundButton.style.left = (xRange.y - 125) + "px";
+    nextRoundButton.addEventListener("click", resetRound);
 }
 
 
@@ -351,6 +333,7 @@ function drawStones(context) {
 }
 
 function resetRound() {
+    askPermission();
     score = 0;
     for (let i = 0; i < stones.length; i++) {
         stones[i] = createRandomStone(xRange, yRange, sizeRange, velocityRange);

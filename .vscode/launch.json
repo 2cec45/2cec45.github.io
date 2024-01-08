@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "chrome",
+            "name": "C:/Users/hanne/Documents/MobileComputing/webapp/2cec45.github.io/index.html",
+            "request": "launch",
+            "url": "C:/Users/hanne/Documents/MobileComputing/webapp/2cec45.github.io/index.html"
+        }
+    ]
+}
