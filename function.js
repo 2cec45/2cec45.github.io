@@ -25,7 +25,7 @@ class Bullet {
 // globals
 var currentFrame = 0;
 var alpha = 0;
-var gyroAccessible = true;;
+var inputMode = true;
 var playerCollisionDetected = false;
 var turningDirection = 0;
 var turningDirections = [0.05, -0.05];
@@ -54,6 +54,7 @@ const velocityRange = new Vector(2, 5);
 const bulletVelocity = 6;
 const bulletSize = new Vector(7, 2);
 var bullets = new Array(0);
+var settingsOpen = false;
 
 function askPermission(){
     if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function"
@@ -181,7 +182,6 @@ function randomStonePosition() {
 }
 
 function wallCollisionDetection() {
-
     for (let i = 0; i < stones.length; i++) {
         if ((stones[i].position.x > xRange.y + 50) || (stones[i].position.x < xRange.x - 50) ||
             (stones[i].position.y < yRange.x - 50) || (stones[i].position.y > yRange.y + 50)) {
@@ -308,7 +308,7 @@ function updatePositions() {
 }
 
 function newPlayerRotation() {
-    if (gyroAccessible) {
+    if (inputMode) {
         return toRadians(alpha * 4);
     } else {
         if(turning){
@@ -372,5 +372,34 @@ function draw() {
         drawStones(context, stones);
         displayScore();
         window.requestAnimationFrame(draw);
+    }
+}
+
+function openSettings() {
+    if(settingsOpen){
+        document.getElementById("toggleInputButton").remove();
+        settingsOpen = false;
+    } else{
+        const toggleInputButton = document.createElement("button");
+        toggleInputButton.textContent = inputMode? "Gyro": "Manual";
+        toggleInputButton.id = "toggleInputButton";
+        document.body.appendChild(toggleInputButton);
+        toggleInputButton.position = "fixed";
+        toggleInputButton.style.right =  50 + "px";
+        toggleInputButton.style.top = (128 + 40) + "px";
+        toggleInputButton.addEventListener("click", toggleInput);
+        settingsOpen = true;
+        }
+    
+}
+
+function toggleInput(){
+    const toggleInputButton = document.getElementById("toggleInputButton");
+    if(inputMode){
+        inputMode = false;
+        toggleInputButton.textContent = inputMode? "Gyro": "Manual";
+    } else{
+        inputMode = true;
+        toggleInputButton.textContent = inputMode? "Gyro": "Manual";
     }
 }
