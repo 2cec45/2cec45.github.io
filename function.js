@@ -7,14 +7,12 @@ class Stone {
         this.velocity = velocity;
     }
 }
-
 class Vector {
     constructor(x, y) {
         this.x = x;
         this.y = y;
     }
 }
-
 class Bullet {
     constructor(position, velocity, direction) {
         this.position = position;
@@ -22,6 +20,7 @@ class Bullet {
         this.direction = direction;
     }
 }
+
 // globals
 var currentFrame = 0;
 var alpha = 0;
@@ -29,6 +28,7 @@ var inputMode = true;
 var playerCollisionDetected = false;
 var turningDirection = 0;
 var turningDirections = [0.05, -0.05];
+
 // GameParameters   
 const stoneAmount = 3;
 const framesPerBullet = 5;
@@ -36,6 +36,7 @@ const stones = new Array(stoneAmount);
 const middle = new Vector(innerWidth/2, innerHeight/2);
 var context;
 var score = 0;
+
 // PlayerParameters
 var currentRotation = 0;
 var turning = false;
@@ -45,17 +46,23 @@ const rCOrigin = new Vector(-10, -20);
 var tip = new Vector(0, 20);
 var lC = new Vector(10, -20);
 var rC = new Vector(-10, -20);
+
 // StoneParameters:
 const xRange = new Vector(-innerWidth/2, innerWidth/2);
 const yRange = new Vector(-innerHeight/2, innerHeight/2);
 const sizeRange = new Vector(17, 45);
 const velocityRange = new Vector(2, 5);
+
 // BulletParameters
 const bulletVelocity = 6;
 const bulletSize = new Vector(7, 2);
 var bullets = new Array(0);
 var settingsOpen = false;
 
+//register listener for the gyro 
+window.addEventListener('deviceorientation', onRotation, false);
+
+//handle devices with operatingsystem > IOS 13
 function askPermission(){
     if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function"
       ) {
@@ -63,13 +70,13 @@ function askPermission(){
       }
 }
 
-window.addEventListener('deviceorientation', onRotation, false);
-
+// basic vector utility functions 
 function add(vec1, vec2) {
     var result = new Vector(vec1.x + vec2.x, vec1.y + vec2.y);
     return result;
 }
 
+// scalar Multiplication of a vector
 function scalarMult(vec, scalar) {
     var res = new Vector(0, 0);
     res.x = vec.x * scalar;
@@ -77,11 +84,13 @@ function scalarMult(vec, scalar) {
     return res;
 }
 
+// normalization of a vector
 function normalize(vec) {
     var length = Math.sqrt((Math.pow(vec.x, 2) + Math.pow(vec.y, 2)));
     return new Vector(vec.x / length, vec.y / length);
 }
 
+// rotation of a vector, with rotation angle given in radians
 function rotate(vec, deg) {
     var result = new Vector(0, 0);
     result.x = vec.x * Math.cos(deg) + vec.y * (- Math.sin(deg));
@@ -89,26 +98,32 @@ function rotate(vec, deg) {
     return result;
 }
 
+// convert degree to radians
 function toRadians(deg) {
     return deg / 360 * Math.PI * 2;
 }
 
+// dot product of two vectors
 function dotProduct(vec1, vec2) {
     v1 = normalize(vec1);
     v2 = normalize(vec2);
     return v1.x * v2.x + v1.y + v2.y;
 }
 
+// function to update the the current rotation when the device is turning.
 function onRotation(event) {
     if (event.alpha != null) {
         alpha = event.alpha;
     }
 }
 
-function playerShoot(tip, lC, rC) {
+// letting the Player shoot a bullet, by adding a new Bullet to the bullet list and clearing off-screen Bullets
+function playerShoot(tip) {
     bullets.push(new Bullet(tip, bulletVelocity, normalize(tip)));
     cleanupBullets();
 }
+
+// clearing off-screen Bullets
 function cleanupBullets() {
     for (let i = bullets.length - 1; i >= 0; i--) {
         const b = bullets[i];
@@ -118,7 +133,7 @@ function cleanupBullets() {
     }
 }
 
-
+// drawing function for a bullet --> just a line
 function drawBullet(context, bullet) {
     context.lineWidth = bulletSize.y;
     context.beginPath();
@@ -130,24 +145,28 @@ function drawBullet(context, bullet) {
     context.lineWidth = 1;
 }
 
+// draw the whole list of bullets
 function drawBullets(context) {
     for (let i = 0; i < bullets.length; i++) {
         drawBullet(context, bullets[i]);
     }
 }
 
+// 'destroying' a stone, by giving it a new random position
 function destroyStone(stone) {
-    var tmp = createRandomStone(xRange, yRange, sizeRange, velocityRange);
+    var tmp = createRandomStone(sizeRange, velocityRange);
     stone.position = tmp.position;
     stone.direction = tmp.direction;
     stone.velocity = tmp.velocity;
     stone.radius = tmp.radius;
 }
 
+// 'destroying' a bullet, by just splicing it from the bullet-array
 function destroyBullet(index) {
     bullets.splice(index, 1);
 }
 
+//checking if a bullet has hit a stone
 function bulletCollision() {
     for (let i = 0; i < bullets.length; i++) {
         var cB = bullets[i];
@@ -167,6 +186,7 @@ function bulletCollision() {
     }
 }
 
+// creating a new random stone position outside of the Viewport for fair gameplay
 function randomStonePosition() {
     var number = Math.trunc(Math.random() * 4);
     switch (number) {
@@ -181,24 +201,28 @@ function randomStonePosition() {
     }
 }
 
+// checking if any stone has hit the Wall, if so create new one
 function wallCollisionDetection() {
     for (let i = 0; i < stones.length; i++) {
         if ((stones[i].position.x > xRange.y + 50) || (stones[i].position.x < xRange.x - 50) ||
             (stones[i].position.y < yRange.x - 50) || (stones[i].position.y > yRange.y + 50)) {
-            stones[i] = createRandomStone(xRange, yRange, sizeRange, velocityRange);
+            stones[i] = createRandomStone(sizeRange, velocityRange);
         }
     }
 }
 
+// adding 1 to the score
 function increaseScore() {
     score++;
 }
 
+// displaying the score on the canvas
 function displayScore() {
     context.font = "30px Arial";
     context.fillText("score:" + score, xRange.x + 50, yRange.x + 50);
 }
 
+// checking if a Stone has hit the Player
 function playerCollision() {
     for (let i = 0; i < stones.length; i++) {
         var stone = stones[i];
@@ -214,7 +238,8 @@ function playerCollision() {
     }
 }
 
-function createRandomStone(xRange, yRange, sizeRange, velocityRange) {
+// create a new random stone within the specified parameters
+function createRandomStone(sizeRange, velocityRange) {
     position = randomStonePosition();
     var size = Math.random() * (sizeRange.y - sizeRange.x) + sizeRange.x;
     var directionNormalized = normalize(position);
@@ -223,26 +248,31 @@ function createRandomStone(xRange, yRange, sizeRange, velocityRange) {
     return new Stone(position, size, direction, velocity);
 }
 
-function fillStonesArray(xRange, yRange, sizeRange, velocityRange) {
+// fill the stone array with completely with stones at random positions within the given parameters
+function fillStonesArray(sizeRange, velocityRange) {
     for (let i = 0; i < stones.length; i++) {
-        stones[i] = createRandomStone(xRange, yRange, sizeRange, velocityRange);
+        stones[i] = createRandomStone(sizeRange, velocityRange);
     }
 }
 
+// function to start turning when the button for left turn is pressed down, to start turning left
 function buttonTurnLeft(){
     turning = true;
     turningDirection = 1; 
 }
 
+// stopping the turn action
 function stopTurning() {
     turning = false;
 }
 
+// function to start turning when the button for right turn is pressed down, to start turning right
 function buttonTurnRight(){
     turning = true;
     turningDirection = 0; 
 }
 
+//initializing function to set up the playfield
 function init() {
     const canvas = document.getElementById("drawing_canvas");
     const button_left = document.getElementById("button_left");
@@ -268,13 +298,14 @@ function init() {
 }
 
 
-
+// setting the canvas size to whole viewport
 function setCanvasSize() {
     var canvas = document.getElementById("drawing_canvas");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
 
+// drawing the Player as triangle between tip, lC-leftCorner and rC-rightCorner
 function drawPlayer(context) {
     context.beginPath();
     context.moveTo(tip.x, tip.y);
@@ -285,6 +316,7 @@ function drawPlayer(context) {
     context.closePath();
 }
 
+// updating the Positons of all game Objects through velocity, rotatation etc.
 function updatePositions() {
     //update Player
     var rotation = newPlayerRotation();
@@ -307,6 +339,7 @@ function updatePositions() {
     playerCollision();
 }
 
+// calculate new Player position/ position of the significant Points
 function newPlayerRotation() {
     if (inputMode) {
         return toRadians(alpha * 4);
@@ -318,6 +351,7 @@ function newPlayerRotation() {
     }
 }
 
+// draw a stone as circle at the stones position and with size
 function drawStone(context, stone) {
     context.beginPath();
     context.arc(stone.position.x, stone.position.y, stone.radius, 0, Math.PI * 2, true);
@@ -325,6 +359,7 @@ function drawStone(context, stone) {
     context.closePath();
 }
 
+// draw all stones from the stones array
 function drawStones(context) {
     for (let i = 0; i < stones.length; i++) {
         const element = stones[i];
@@ -332,11 +367,12 @@ function drawStones(context) {
     }
 }
 
+// reset the game parameters for a new round 
 function resetRound() {
     askPermission();
     score = 0;
     for (let i = 0; i < stones.length; i++) {
-        stones[i] = createRandomStone(xRange, yRange, sizeRange, velocityRange);
+        stones[i] = createRandomStone(sizeRange, velocityRange);
     }
     bullets = new Array(0);
     currentRotation = 0;
@@ -345,6 +381,7 @@ function resetRound() {
     window.requestAnimationFrame(draw);
 }
 
+// showing the end game screen --> mostly displaying the new round button
 function showEndScreen() {
     const nextRoundButton = document.createElement("button");
     nextRoundButton.textContent = "Next round!";
@@ -357,6 +394,7 @@ function showEndScreen() {
     nextRoundButton.addEventListener("click", resetRound);
 }
 
+// animation function for the game which is run every frame
 function draw() {
     currentFrame++;
     context.clearRect(xRange.x, yRange.x, -xRange.x * 2, -yRange.x * 2)
@@ -375,6 +413,7 @@ function draw() {
     }
 }
 
+//function to open the settings and toggle the input mode
 function openSettings() {
     if(settingsOpen){
         document.getElementById("toggleInputButton").remove();
@@ -393,6 +432,7 @@ function openSettings() {
     
 }
 
+// toggle the input mode between gyro input and manual input
 function toggleInput(){
     const toggleInputButton = document.getElementById("toggleInputButton");
     if(inputMode){
